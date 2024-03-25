@@ -78,8 +78,8 @@ class App extends Component {
 
         return (
             <div id="main">
-                <input data-testid="input1" value={name1} onChange={this.handlechange1} placeholder="Enter first name" />
-                <input data-testid="input2" value={name2} onChange={this.handlechange2} placeholder="Enter second name" />
+                <input data-testid="input1" name="name1" value={name1} onChange={handlechange1} placeholder="Enter first name"/>
+               <input data-testid="input2" name="name2" value={name2} onChange={handlechange2} placeholder="Enter second name"/>
                 <button data-testid="calculate_relationship" onClick={this.handleClick}>Calculate Relationship Future</button>
                 <button data-testid="clear" onClick={this.clearFeild}>Clear</button>
                 <h3 data-testid="answer"></h3>
