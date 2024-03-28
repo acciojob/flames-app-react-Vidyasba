@@ -44,7 +44,7 @@ class App extends Component {
       }
     }
 
-    const result = Math.floor(modified.length % 6);
+    const result = Math.floor(modified.length % 5);
 
     switch (result) {
       case 1:
