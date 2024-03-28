@@ -1,91 +1,118 @@
 import React, { Component } from "react";
-import '../styles/App.css';
+import "../styles/App.css";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name1: '',
-            name2: ''
-        };
-        this.handlechange1 = this.handlechange1.bind(this);
-        this.handlechange2 = this.handlechange2.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-        this.clearFeild = this.clearFeild.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      name1: "",
+      name2: "",
+      relationship: "",
+    };
+  }
+
+  calculateRelationship = () => {
+    const { name1, name2 } = this.state;
+
+    const nameA = name1.trim().split("");
+    const nameB = name2.trim().split("");
+
+    if (nameA.length === 0 && nameB.length === 0) {
+      this.setState({ relationship: "Please enter valid input" });
+      return;
     }
 
-    handlechange1(e) {
-        this.setState({ name1: e.target.value });
+    const charCount = {};
+
+    for (let char of nameA) {
+      charCount[char] = (charCount[char] || 0) + 1;
     }
 
-    handlechange2(e) {
-        this.setState({ name2: e.target.value });
+    let modified = "";
+    for (const char of nameB) {
+      if (charCount[char] && charCount[char] > 0) {
+        charCount[char]--;
+      } else {
+        modified += char;
+      }
     }
 
-    handleClick() {
-        const answerElement = document.querySelector('[data-testid="answer"]');
-        const { name1, name2 } = this.state;
-        
-        if (name1 === '' && name2 === '') {
-            answerElement.innerText = "Please Enter valid input";
-            return;
-        }
-
-        let finalStr = '';
-        let modifiedName2 = name2;
-
-        for (let i = 0; i < name1.length; i++) {
-            const char = name1[i];
-            if (!modifiedName2.includes(char)) {
-                finalStr += char;
-            } else {
-                modifiedName2 = modifiedName2.replace(char, '');
-            }
-        }
-        finalStr += modifiedName2;
-        console.log(finalStr);
-        let sum = 0;
-        for (let k = 0; k < finalStr.length; k++) {
-            sum = sum + 1;
-        }
-        let mod = sum % 6;
-        console.log(mod);
-
-
-        if (mod === 1) {
-            answerElement.innerText = "Friends";
-        } else if (mod === 2) {
-            answerElement.innerText = "Love";
-        } else if (mod === 3) {
-            answerElement.innerText = "Affection";
-        } else if (mod === 4) {
-            answerElement.innerText = "Marriage";
-        } else if (mod === 5) {
-            answerElement.innerText = "Enemy";
-        } else if (mod === 0) {
-            answerElement.innerText = "Siblings";
-        }
+    for (const char in charCount) {
+      while (charCount[char] > 0) {
+        modified += char;
+        charCount[char]--;
+      }
     }
 
-    clearFeild() {
-        this.setState({ name1: '', name2: '' });
-        const answerElement = document.querySelector('[data-testid="answer"]');
-        answerElement.innerText = '';
-    }
+    const result = Math.floor(modified.length % 6);
 
-    render() {
-        const { name1, name2 } = this.state;
-
-        return (
-            <div id="main">
-                <input data-testid="input1" name="name1" value={name1} onChange={handlechange1} placeholder="Enter first name"/>
-               <input data-testid="input2" name="name2" value={name2} onChange={handlechange2} placeholder="Enter second name"/>
-                <button data-testid="calculate_relationship" onClick={this.handleClick}>Calculate Relationship Future</button>
-                <button data-testid="clear" onClick={this.clearFeild}>Clear</button>
-                <h3 data-testid="answer"></h3>
-            </div>
-        )
+    switch (result) {
+      case 1:
+        this.setState({ relationship: "Friends" });
+        break;
+      case 2:
+        this.setState({ relationship: "Love" });
+        break;
+      case 3:
+        this.setState({ relationship: "Affection" });
+        break;
+      case 4:
+        this.setState({ relationship: "Marriage" });
+        break;
+      case 5:
+        this.setState({ relationship: "Enemy" });
+        break;
+      default:
+        this.setState({ relationship: "Siblings" });
     }
+  };
+
+  clearForm = () => {
+    this.setState({
+      name1: "",
+      name2: "",
+      relationship: "",
+    });
+  };
+
+  render() {
+    const { name1, name2, relationship } = this.state;
+
+    return (
+      <>
+        <div id="main">
+          <input
+            type="text"
+            name="name1"
+            value={name1}
+            onChange={(e) => this.setState({ name1: e.target.value })}
+            placeholder="Enter first name"
+            data-testid="input1"
+          />
+          <br />
+          <input
+            type="text"
+            name="name2"
+            value={name2}
+            onChange={(e) => this.setState({ name2: e.target.value })}
+            placeholder="Enter second name"
+            data-testid="input2"
+          />
+          <br />
+          <button
+            onClick={this.calculateRelationship}
+            data-testid="calculate_relationship"
+          >
+            Calculate Relationship Future
+          </button>
+          <button onClick={this.clearForm} data-testid="clear">
+            Clear
+          </button>
+        </div>
+        <h3 data-testid="answer">{relationship}</h3>
+      </>
+    );
+  }
 }
 
 export default App;
